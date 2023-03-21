@@ -1,16 +1,30 @@
 export default class Task {
     constructor (title, description, dueDate, priority, notes) {
-        this.title = title;
+        const regexDate = /^(0?[1-9]|1[0-2])\/(0?[1-9]|[12]\d|30|31)\/(\d{4}|\d{2})$/;
+        if(title.length > 0) {
+            this.title = title;
+        }
+        else {
+            console.log('Task title can\'t be empty!');
+        }
+        
         this.description = description;
         
-        if (dueDate instanceof Date && !isNaN(dueDate)) {
-            this.dueDate = dueDate;
+        if (regexDate.test(dueDate)) {
+            this.dueDate = new Date(dueDate);
         }
         else {
             this.dueDate = new Date();
         }
-
-        this.priority = priority;
+        
+        if (priority === 'low' || priority === 'medium' || priority === 'hight') {
+            this.priority = priority;
+        }
+        
+        else {
+            this.priority = 'low';
+        }
+        
         this.notes = notes;
     }
 
@@ -19,9 +33,6 @@ export default class Task {
     }
 
     setTitle(string) {
-        if (string.length < 1) {
-            return;
-        }
         this.title = string;
     }
 
@@ -30,9 +41,6 @@ export default class Task {
     }
 
     setDescription(string) {
-        if (string.length < 1) {
-            return;
-        }
         this.description = string;
     }
 
@@ -41,7 +49,7 @@ export default class Task {
     }
 
     setDueDate(date) {
-        if (date instanceof Date && !isNaN(date)) {
+        if (regexDate.test(dueDate)) {
             this.dueDate = date;
         }
         this.dueDate = new Date();
@@ -52,10 +60,12 @@ export default class Task {
     }
 
     setPriority(string) {
-        if (string != 'low' || string != 'medium' || string != 'hight' || string.length < 1) {
-            console.log('Priority set ERROR');
+        if (string === 'low' || string === 'medium' || string === 'hight') {
+            this.priority = string;
         }
-        this.priority = string;
+        else {
+            this.priority = 'low';
+        }
     }
 
     getNotes() {
@@ -63,9 +73,6 @@ export default class Task {
     }
 
     setNotes(string) {
-        if (string.length > 100) {
-            return;
-        }
         this.notes = string;
     }
 }
