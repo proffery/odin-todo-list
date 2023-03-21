@@ -1,5 +1,5 @@
 export default class Task {
-    constructor (title, description, dueDate, priority, notes) {
+    constructor (title, description, dueDate, priority, notes, complete) {
         const regexDate = /^(0?[1-9]|1[0-2])\/(0?[1-9]|[12]\d|30|31)\/(\d{4}|\d{2})$/;
         if(title.length > 0) {
             this.title = title;
@@ -7,7 +7,7 @@ export default class Task {
         else {
             console.log('Task title can\'t be empty!');
         }
-        
+
         this.description = description;
         
         if (regexDate.test(dueDate)) {
@@ -26,6 +26,9 @@ export default class Task {
         }
         
         this.notes = notes;
+
+        this.complete = complete;
+       
     }
 
     getTitle() {
@@ -74,5 +77,13 @@ export default class Task {
 
     setNotes(string) {
         this.notes = string;
+    }
+
+    getComplete() {
+        return this.complete;
+    }
+
+    setComplete(boolean) {
+        this.complete = boolean;
     }
 }
