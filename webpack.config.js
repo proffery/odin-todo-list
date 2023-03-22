@@ -16,7 +16,7 @@ const config = {
     path: path.resolve(__dirname, "dist"),
     filename: '[name][contenthash].js',
     clean: true,
-    assetModuleFilename: '[name][ext]',
+    assetModuleFilename: 'images/[name][ext]',
   },
   devtool: 'source-map',
   devServer: {
@@ -31,7 +31,7 @@ const config = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: "index.html",
+      template: 'index.html',
     }),
 
     // Add your plugins here
@@ -49,7 +49,10 @@ const config = {
       },
       {
         test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
-        type: "asset",
+        type: 'asset/resource',
+        generator: {
+          filename: 'image/[name][ext]'
+        }
       },
 
       // Add your rules for custom modules here
