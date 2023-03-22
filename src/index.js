@@ -1,3 +1,4 @@
+import {toDoList} from './toDoList.js';
 import Task from './task.js'
 import Project from './project.js';
 import './styles/style.css'
@@ -19,3 +20,5 @@ console.log(project.tasks);
 
 project.name = 'Project2';
 console.log(project.name);
+toDoList.addToList(project);
+console.log(toDoList.getList()[0]);
