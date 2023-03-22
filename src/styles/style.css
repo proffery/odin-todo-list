@@ -15,6 +15,7 @@
 body {
     background-color: var(--background-color-main);
     padding: 1rem;
+    font-size: var(--main-font);
 }
 
 .main-container {
