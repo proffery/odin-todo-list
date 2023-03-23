@@ -10,6 +10,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    outline: none           ;
 }
 
 body {
@@ -30,23 +31,42 @@ body {
     grid-row: 1 / 2;
 }
 
-.projects {
-    grid-column: 1 / 2;
-    grid-row: 2 / 3;
+.project-header, .tasks-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: .5rem;
+}
+
+.projects, .tasks {
     background-color: var(--background-color-block);
     padding: 1rem;
 }
 
-.project {
-    padding: .5rem;
+.projects {
+    grid-column: 1 / 2;
+    grid-row: 2 / 3;
 }
 
 .tasks {
     grid-column: 2 / 3;
     grid-row: 2 / 3;
-    background-color: var(--background-color-block);
-    padding: 1rem;
 }
+
+.project, .task {
+    padding: .5rem;
+}
+
+.project:focus, .task:focus {
+    border: 1px solid;
+}
+
+.add-button {
+    width: var(--main-font);
+}
+
+
+
 
 
 .footer {

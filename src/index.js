@@ -7,6 +7,7 @@ import {render} from './render.js';
 const task1 = new Task('task', 'descr', '06/16/87', 'medium', 'notes', true);
 const task2 = new Task('task2', 'descr', '106/16/87', 'ddd', 'notes', false);
 const project = new Project('Project1');
+const project2 = new Project('Project2');
 project.addTask(task1);
 project.addTask(task2);
 //console.log(task);
@@ -20,9 +21,10 @@ console.log(project.task(1));
 
 console.log(project.tasks);
 
-project.name = 'Project2';
+// project.name = 'Project2';
 console.log(project.name);
 toDoList.addToList(project);
+toDoList.addToList(project2);
 console.log(toDoList.getList()[0]);
 
 render.projects();
