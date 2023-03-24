@@ -1,7 +1,9 @@
 import addIcon from './img/plus.svg';
+import checIcon from './img/check.svg';
 import {toDoList} from './toDoList.js';
 import Task from './task.js'
 import Project from './project.js';
+import './stringFunctions'
 const progectsContainer = document.querySelector('.projects');
 const tasksContainer = document.querySelector('.tasks');
 
@@ -24,6 +26,8 @@ const render = (() => {
         }
     }
     
+
+
     function renderTasks(projectIndex) {
         if (!isProjectsEmpty() && !isTasksEmpty(projectIndex)) {
             addButtonRender();
@@ -36,10 +40,36 @@ const render = (() => {
         for (let i = 0; i < toDoList.getList()[projectIndex].tasks.length; i++) {
             const taskContainer = document.createElement('div');
             taskContainer.classList.add('task');
-            taskContainer.textContent = (`${toDoList.getList()[projectIndex].tasks[i].title}`);
+
+            if (toDoList.getList()[projectIndex].tasks[i].priority === 'low') {
+                taskContainer.classList.add('task-low');
+            }
+            if (toDoList.getList()[projectIndex].tasks[i].priority === 'medium') {
+                taskContainer.classList.add('task-medium');
+            }
+            if (toDoList.getList()[projectIndex].tasks[i].priority === 'hight') {
+                taskContainer.classList.add('task-hight');
+            }
+
+            taskContainer.textContent = (`${toDoList.getList()[projectIndex].tasks[i].title.capitalizeFirstLetter()}` + ` | ` + 
+            `${toDoList.getList()[projectIndex].tasks[i].description.capitalizeFirstLetter()}` + ` | ` +
+            `${toDoList.getList()[projectIndex].tasks[i].dueDate.getDate()}` + `/` +
+            `${toDoList.getList()[projectIndex].tasks[i].dueDate.getMonth()}` + `/` +
+            `${toDoList.getList()[projectIndex].tasks[i].dueDate.getFullYear()}` + ` | ` +
+            `${toDoList.getList()[projectIndex].tasks[i].notes.capitalizeFirstLetter().stringCutter()}`);
+
             taskContainer.setAttribute('value', `${i}`);
             taskContainer.setAttribute('tabindex', `0`);
             tasksContainer.appendChild(taskContainer);
+
+            if(toDoList.getList()[projectIndex].tasks[i].complete) {
+                const checkMark = document.createElement('img');
+                checkMark.classList.add('check-mark');
+                checkMark.setAttribute('src', checIcon);
+                checkMark.setAttribute('alt', 'Check mark');
+                taskContainer.appendChild(checkMark);
+            }
+
         }
         
     }
@@ -80,7 +110,6 @@ const render = (() => {
     function onChangeFocus(e) {
         addButtonRemove();
         cleanTaskContainer();
-        //console.log(e.target.getAttribute('value'));
         renderTasks(e.target.getAttribute('value'));
     }
 

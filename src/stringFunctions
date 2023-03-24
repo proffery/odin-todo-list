@@ -1,0 +1,18 @@
+Object.defineProperty(String.prototype, 'capitalizeFirstLetter', {
+    value: function () {
+        return this.charAt(0).toUpperCase() + this.slice(1);
+    },
+    writable: true, // so that one can overwrite it later
+    configurable: true // so that it can be deleted later
+});
+
+Object.defineProperty(String.prototype, 'stringCutter', {
+    value: function () {
+        if(this.length <= 10) {
+            return this;
+        }
+        return this.substring(0, 10) + '...';
+    },
+    writable: true, // so that one can overwrite it later
+    configurable: true // so that it can be deleted later
+});

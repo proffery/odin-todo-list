@@ -53,15 +53,31 @@ body {
     grid-row: 2 / 3;
 }
 
+.task-low {
+    background-color: rgb(213, 252, 213);
+}
+
+.task-medium {
+    background-color: rgb(252, 234, 197);
+}
+
+.task-hight {
+    background-color: rgb(255, 208, 201);
+}
+
 .project, .task {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-align: right;
     padding: .5rem;
 }
 
 .project:focus, .task:focus {
-    border: 1px solid;
+    border: 1px solid var(--background-color-main);
 }
 
-.add-button {
+.add-button, .check-mark {
     width: var(--main-font);
 }
 
