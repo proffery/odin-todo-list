@@ -23,8 +23,8 @@ console.log(project.tasks);
 
 // project.name = 'Project2';
 console.log(project.name);
-toDoList.addToList(project);
 toDoList.addToList(project2);
+toDoList.addToList(project);
 console.log(toDoList.getList()[0]);
 
 render.projects();

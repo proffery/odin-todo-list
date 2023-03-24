@@ -43,4 +43,11 @@ export default class Project {
         }
     }
 
+    isTasksEmpty() {
+        if (this.tasks.length == 0) {
+            return true;
+        }
+        return false;
+    }
+
 }
