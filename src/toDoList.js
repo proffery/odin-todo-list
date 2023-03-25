@@ -1,19 +1,23 @@
 const toDoList = (() => {
     const toDoArr = [];
     
-    function getList() {
+    function getProjectList() {
         return toDoArr;
     }
 
-    function addToList(project) {
+    function getProject(projectIndex) {
+        return toDoArr[projectIndex];
+    }
+
+    function addProjectToList(project) {
         toDoArr.push(project);
     }
 
-    function removeFromList(index) {
+    function removeProjectFromList(index) {
         toDoArr.splice(index, 1);
     }
 
-    return {getList, addToList, removeFromList}
+    return {getProjectList, addProjectToList, removeProjectFromList, getProject}
 })();
 
 export {toDoList};

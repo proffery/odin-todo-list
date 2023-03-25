@@ -9,10 +9,10 @@ const tasksContainer = document.querySelector('.tasks');
 
 const render = (() => {
     function projects() {
-        for (let i = 0; i < toDoList.getList().length; i++) {
+        for (let i = 0; i < toDoList.getProjectList().length; i++) {
             const projectContainer = document.createElement('div');
             projectContainer.classList.add(`project`);
-            projectContainer.textContent = (`${toDoList.getList()[i].name}`);
+            projectContainer.textContent = (`${toDoList.getProjectList()[i].name}`);
             projectContainer.setAttribute('value', `${i}`);
             projectContainer.setAttribute('tabindex', `0`);
             progectsContainer.appendChild(projectContainer);
@@ -37,32 +37,32 @@ const render = (() => {
             addButtonRender();
         }
 
-        for (let i = 0; i < toDoList.getList()[projectIndex].tasks.length; i++) {
+        for (let i = 0; i < toDoList.getProject(projectIndex).tasks.length; i++) {
             const taskContainer = document.createElement('div');
             taskContainer.classList.add('task');
 
-            if (toDoList.getList()[projectIndex].tasks[i].priority === 'low') {
+            if (toDoList.getProject(projectIndex).task(i).priority === 'low') {
                 taskContainer.classList.add('task-low');
             }
-            if (toDoList.getList()[projectIndex].tasks[i].priority === 'medium') {
+            if (toDoList.getProject(projectIndex).task(i).priority === 'medium') {
                 taskContainer.classList.add('task-medium');
             }
-            if (toDoList.getList()[projectIndex].tasks[i].priority === 'hight') {
+            if (toDoList.getProject(projectIndex).task(i).priority === 'hight') {
                 taskContainer.classList.add('task-hight');
             }
 
-            taskContainer.textContent = (`${toDoList.getList()[projectIndex].tasks[i].title.capitalizeFirstLetter()}` + ` | ` + 
-            `${toDoList.getList()[projectIndex].tasks[i].description.capitalizeFirstLetter()}` + ` | ` +
-            `${toDoList.getList()[projectIndex].tasks[i].dueDate.getDate()}` + `/` +
-            `${toDoList.getList()[projectIndex].tasks[i].dueDate.getMonth()}` + `/` +
-            `${toDoList.getList()[projectIndex].tasks[i].dueDate.getFullYear()}` + ` | ` +
-            `${toDoList.getList()[projectIndex].tasks[i].notes.capitalizeFirstLetter().stringCutter()}`);
+            taskContainer.textContent = (`${toDoList.getProject(projectIndex).task(i).title.capitalizeFirstLetter()}` + ` | ` + 
+            `${toDoList.getProject(projectIndex).task(i).description.capitalizeFirstLetter()}` + ` | ` +
+            `${toDoList.getProject(projectIndex).task(i).dueDate.getDate()}` + `/` +
+            `${toDoList.getProject(projectIndex).task(i).dueDate.getMonth()}` + `/` +
+            `${toDoList.getProject(projectIndex).task(i).dueDate.getFullYear()}` + ` | ` +
+            `${toDoList.getProject(projectIndex).task(i).notes.capitalizeFirstLetter().stringCutter()}`);
 
             taskContainer.setAttribute('value', `${i}`);
-            taskContainer.setAttribute('tabindex', `0`);
+            taskContainer.setAttribute('tabindex', `1`);
             tasksContainer.appendChild(taskContainer);
 
-            if(toDoList.getList()[projectIndex].tasks[i].complete) {
+            if(toDoList.getProject(projectIndex).task(i).complete) {
                 const checkMark = document.createElement('img');
                 checkMark.classList.add('check-mark');
                 checkMark.setAttribute('src', checIcon);
@@ -89,14 +89,14 @@ const render = (() => {
     }
 
     function isProjectsEmpty() {
-        if (toDoList.getList().length == 0) {
+        if (toDoList.getProjectList().length == 0) {
             return true;
         }
         return false;
     }
 
     function isTasksEmpty(projectIndex) {
-        if (toDoList.getList()[projectIndex].isTasksEmpty()) {
+        if (toDoList.getProject(projectIndex).isTasksEmpty()) {
             return true;
         }
         return false;
