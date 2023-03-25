@@ -27,8 +27,8 @@ console.log(project.tasks);
 
 // project.name = 'Project2';
 console.log(project.name);
-toDoList.addProjectToList(project2);
-toDoList.addProjectToList(project);
-console.log(toDoList.getProject(0));
+// toDoList.addProjectToList(project2);
+// toDoList.addProjectToList(project);
+// console.log(toDoList.getProject(0));
 
 render.projects();

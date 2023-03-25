@@ -1,6 +1,5 @@
 :root {
-    --main-font: clamp(16px, 1.6vw, 1.5rem);
-    --title-font: clamp(20px, 3vw, 5rem);
+    --main-font: clamp(16px, calc(16px + (28 - 16) * ((100vw - 360px) / 1560)), 28px);
     --font-color: rgb(0, 0, 0);
     --background-color-main: rgb(214, 224, 223);
     --background-color-block: rgb(255, 255, 255);
@@ -69,7 +68,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    text-align: right;
+    text-align: left;
     padding: .5rem;
 }
 
@@ -81,9 +80,39 @@ body {
     width: var(--main-font);
 }
 
+.add-project-window {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translateY(-35%);
+    transform: translateX(-50%);
+    height: fit-content;
+    width: fit-content;
+    border: 1px solid var(--background-color-main);
+    background-color: var(--background-color-block);
+    padding: 1.5rem;
+}
 
+.buttons-holder {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
 
+.add-project-button, .cancel-button {
+    margin-left: 1rem;
+    margin-right: 1rem;
+    width: calc(var(--main-font) + 2rem);
+}
 
+.input-project-name {
+    display: flex;
+    margin: 1rem;
+}
 
 .footer {
     display: flex;
@@ -105,4 +134,16 @@ body {
 
 a {
     color: var(--font-color);
+}
+
+.warning {
+    display: flex;
+    position: absolute;
+    transform: translateY(-70%);
+    border: 1px solid #f39389;
+    border-radius: 2px;
+    padding: .3rem;
+    background-color: #fbd8d4;
+    color: #3b3c40;
+    font-size: calc(var(--main-font) - 5px);
 }
