@@ -72,7 +72,7 @@ body {
     padding: .5rem;
 }
 
-.project:focus, .task:focus {
+.project:focus, .task:hover {
     border: 1px solid var(--background-color-main);
 }
 

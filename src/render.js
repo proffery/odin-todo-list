@@ -21,7 +21,7 @@ const render = (() => {
             projectContainer.setAttribute('value', `${i}`);
             projectContainer.setAttribute('tabindex', `0`);
             progectsContainer.appendChild(projectContainer);
-            projectContainer.addEventListener('click', onChangeFocus);
+            projectContainer.addEventListener('click', isFocusProjectsChange);
 
             const removeButton = document.createElement('img');
             removeButton.classList.add('remove-button');
@@ -33,7 +33,7 @@ const render = (() => {
         
         
         addProjectsButton.addEventListener('click', addProjectWindow);
-        
+        addTasksButton.addEventListener('click', addTaskWindow);
         if (!isProjectsEmpty()) {
             renderLastProjectTasks();
         }
@@ -46,6 +46,12 @@ const render = (() => {
         renderTasks(0);
     }
     
+    function addTaskWindow() {
+        addTasksButton.removeEventListener('click', addTaskWindow);
+        console.log('Tasks Window');
+        //LOGIC
+    }
+
     function addProjectWindow() {
         addProjectsButton.removeEventListener('click', addProjectWindow);
         
@@ -103,7 +109,7 @@ const render = (() => {
             `${toDoList.getProject(projectIndex).task(i).notes.capitalizeFirstLetter().stringCutter()}`);
             
             taskContainer.setAttribute('value', `${i}`);
-            taskContainer.setAttribute('tabindex', `1`);
+            taskContainer.setAttribute('tabindex', `-1`);
             tasksContainer.appendChild(taskContainer);
             
             if(toDoList.getProject(projectIndex).task(i).complete) {
@@ -169,7 +175,7 @@ const render = (() => {
         projects.forEach(project => project.remove());
     }
 
-    function onChangeFocus(e) {
+    function isFocusProjectsChange(e) {
         cleanTaskContainer();
         renderTasks(e.target.getAttribute('value'));
     }
