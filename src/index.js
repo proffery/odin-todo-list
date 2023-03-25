@@ -2,7 +2,6 @@ import {toDoList} from './toDoList.js';
 import Task from './task.js'
 import Project from './project.js';
 import './styles/style.css';
-import githubMark from './img/github-mark.png';
 import {render} from './render.js';
 const task1 = new Task('task', 'descr', '06/16/87', 'medium', '01234567890', true);
 const task2 = new Task('task2', 'descr', '106/16/87', 'ddd', 'notes', false);
@@ -27,8 +26,8 @@ console.log(project.tasks);
 
 // project.name = 'Project2';
 console.log(project.name);
-// toDoList.addProjectToList(project2);
-// toDoList.addProjectToList(project);
-// console.log(toDoList.getProject(0));
+toDoList.addProjectToList(project2);
+toDoList.addProjectToList(project);
+console.log(toDoList.getProject(0));
 
 render.projects();

@@ -1,5 +1,6 @@
 import addIcon from './img/plus.svg';
 import checIcon from './img/check.svg';
+import githubMark from './img/github-mark.png';
 import {toDoList} from './toDoList.js';
 import Task from './task.js'
 import Project from './project.js';
@@ -13,6 +14,7 @@ const render = (() => {
         
         cleanProjectsContainer();
 
+
         for (let i = 0; i < toDoList.getProjectList().length; i++) {
             const projectContainer = document.createElement('div');
             projectContainer.classList.add(`project`);
@@ -24,8 +26,8 @@ const render = (() => {
         
         if (!isProjectsEmpty()) {
             const allProjects = document.querySelectorAll('.project');
-            allProjects[0].focus();
-            renderTasks(0);
+            allProjects[allProjects.length - 1].focus();
+            renderTasks(allProjects.length - 1);
             allProjects.forEach(project => project.addEventListener('click', onChangeFocus));
         }
 
@@ -68,14 +70,13 @@ const render = (() => {
     }
     
     function renderTasks(projectIndex) {
-        if (!isProjectsEmpty() && !isTasksEmpty(projectIndex)) {
-            addButtonRender();
+        if (isProjectsEmpty) {
+            addTasksPlusButton();
         }
-        
-        if (!isProjectsEmpty() && isTasksEmpty(projectIndex)) {
-            addButtonRender();
+        else {
+            removeTasksPlusButton();
         }
-        
+
         for (let i = 0; i < toDoList.getProject(projectIndex).tasks.length; i++) {
             const taskContainer = document.createElement('div');
             taskContainer.classList.add('task');
@@ -123,6 +124,7 @@ const render = (() => {
             toDoList.addProjectToList(new Project(projectNameInput.value));
             removeAddProjectWindow();
             projects();
+            removeTasksPlusButton()
         }
     }
     
@@ -132,12 +134,27 @@ const render = (() => {
         addProjectButton.addEventListener('click', addProjectWindow);
     }
     
-    function addButtonRemove() {
+    function plusButton(projectIndex) {
+
+        if (isTasksEmpty(projectIndex) && !isProjectsEmpty()) {
+            removeTasksPlusButton();
+        }
+        else if (!isTasksEmpty(projectIndex) && !isProjectsEmpty()) {
+            removeTasksPlusButton();
+        }
+        else {
+            addTasksPlusButton();
+        }
+
+
+    }
+    
+    function removeTasksPlusButton() {
         const addButton = document.querySelector('img[alt="Add task"]');
         addButton.remove();
     }
     
-    function addButtonRender() {
+    function addTasksPlusButton() {
         const taskHeader = document.querySelector('.tasks-header');
         const addTaskImg = document.createElement('img');
         addTaskImg.classList.add('add-button');
@@ -168,16 +185,14 @@ const render = (() => {
     }
     
     function cleanProjectsContainer() {
-        if (!isProjectsEmpty) {
-            const projects = document.querySelectorAll('.project');
-            projects.forEach(project => project.remove());
-            console.log('All projects removed from container');
-        }
+        const projects = document.querySelectorAll('.project');
+        projects.forEach(project => project.remove());
+        console.log('All projects removed from container');
     }
 
     function onChangeFocus(e) {
-        addButtonRemove();
         cleanTaskContainer();
+        plusButton(e.target.getAttribute('value'));
         renderTasks(e.target.getAttribute('value'));
     }
     
