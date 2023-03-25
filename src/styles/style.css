@@ -76,7 +76,7 @@ body {
     border: 1px solid var(--background-color-main);
 }
 
-.add-button, .check-mark {
+.add-projects-button, .add-tasks-button, .check-mark, .remove-button {
     width: var(--main-font);
 }
 
@@ -107,10 +107,6 @@ body {
     margin-left: 1rem;
     margin-right: 1rem;
     width: calc(var(--main-font) + 2rem);
-}
-
-.remove-button {
-    width: var(--main-font);
 }
 
 .input-project-name {

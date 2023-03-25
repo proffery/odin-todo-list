@@ -8,7 +8,8 @@ import Project from './project.js';
 import './stringFunctions'
 const progectsContainer = document.querySelector('.projects');
 const tasksContainer = document.querySelector('.tasks');
-const addProjectButton = document.querySelector('.add-button');
+const addProjectsButton = document.querySelector('.add-projects-button');
+const addTasksButton = document.querySelector('.add-tasks-button');
 
 const render = (() => {
     function projects() {
@@ -31,7 +32,7 @@ const render = (() => {
         }
         
         
-        addProjectButton.addEventListener('click', addProjectWindow);
+        addProjectsButton.addEventListener('click', addProjectWindow);
         
         if (!isProjectsEmpty()) {
             renderLastProjectTasks();
@@ -46,7 +47,7 @@ const render = (() => {
     }
     
     function addProjectWindow() {
-        addProjectButton.removeEventListener('click', addProjectWindow);
+        addProjectsButton.removeEventListener('click', addProjectWindow);
         
         const windowContainer = document.createElement('div');
         windowContainer.classList.add('add-project-window');
@@ -75,16 +76,11 @@ const render = (() => {
         cancelButton.textContent = 'Cancel';
         buttonsHolder.appendChild(cancelButton);
         cancelButton.addEventListener('click', removeAddProjectWindow);
+
+        inputProjectName.focus();
     }
     
     function renderTasks(projectIndex) {
-        if (isProjectsEmpty) {
-            addTasksPlusButton();
-        }
-        else {
-            removeTasksPlusButton();
-        }
-
         for (let i = 0; i < toDoList.getProject(projectIndex).tasks.length; i++) {
             const taskContainer = document.createElement('div');
             taskContainer.classList.add('task');
@@ -127,9 +123,6 @@ const render = (() => {
         toDoList.removeProjectFromList(e.target.parentNode.getAttribute('value'));
         cleanTaskContainer();
         projects();
-        if (!isProjectsEmpty()) {
-            removeTasksPlusButton();
-        }
     }
 
     function addProject(e) {
@@ -142,42 +135,16 @@ const render = (() => {
             toDoList.addProjectToList(new Project(projectNameInput.value));
             removeAddProjectWindow();
             projects();
-            removeTasksPlusButton();
         }
     }
     
     function removeAddProjectWindow() {
         const projectWindow = document.querySelector('.add-project-window')
         projectWindow.remove();
-        addProjectButton.addEventListener('click', addProjectWindow);
+        addProjectsButton.addEventListener('click', addProjectWindow);
     }
     
-    function plusButtonOnFocus(projectIndex) {
-        if (isTasksEmpty(projectIndex) && !isProjectsEmpty()) {
-            removeTasksPlusButton();
-        }
-        else if (!isTasksEmpty(projectIndex) && !isProjectsEmpty()) {
-            removeTasksPlusButton();
-        }
-        else {
-            addTasksPlusButton();
-        }
-    }
-    
-    function removeTasksPlusButton() {
-        const addButton = document.querySelector('img[alt="Add task"]');
-        addButton.remove();
-    }
-    
-    function addTasksPlusButton() {
-        const taskHeader = document.querySelector('.tasks-header');
-        const addTaskImg = document.createElement('img');
-        addTaskImg.classList.add('add-button');
-        addTaskImg.setAttribute('src', addIcon);
-        addTaskImg.setAttribute('alt', 'Add task');
-        taskHeader.appendChild(addTaskImg);
-    }
-    
+
     function isProjectsEmpty() {
         if (toDoList.getProjectList().length == 0) {
             return true;
@@ -204,7 +171,6 @@ const render = (() => {
 
     function onChangeFocus(e) {
         cleanTaskContainer();
-        plusButtonOnFocus(e.target.getAttribute('value'));
         renderTasks(e.target.getAttribute('value'));
     }
     
