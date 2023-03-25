@@ -1,5 +1,6 @@
 import addIcon from './img/plus.svg';
 import checIcon from './img/check.svg';
+import trashIcon from   './img/trash.svg';
 import githubMark from './img/github-mark.png';
 import {toDoList} from './toDoList.js';
 import Task from './task.js'
@@ -11,10 +12,7 @@ const addProjectButton = document.querySelector('.add-button');
 
 const render = (() => {
     function projects() {
-        
         cleanProjectsContainer();
-
-
         for (let i = 0; i < toDoList.getProjectList().length; i++) {
             const projectContainer = document.createElement('div');
             projectContainer.classList.add(`project`);
@@ -22,18 +20,30 @@ const render = (() => {
             projectContainer.setAttribute('value', `${i}`);
             projectContainer.setAttribute('tabindex', `0`);
             progectsContainer.appendChild(projectContainer);
+            projectContainer.addEventListener('click', onChangeFocus);
+
+            const removeButton = document.createElement('img');
+            removeButton.classList.add('remove-button');
+            removeButton.src = trashIcon;
+            removeButton.alt = 'Remove button';
+            projectContainer.appendChild(removeButton);
+            removeButton.addEventListener('click', removeProject);
         }
         
-        if (!isProjectsEmpty()) {
-            const allProjects = document.querySelectorAll('.project');
-            allProjects[allProjects.length - 1].focus();
-            renderTasks(allProjects.length - 1);
-            allProjects.forEach(project => project.addEventListener('click', onChangeFocus));
-        }
-
+        
         addProjectButton.addEventListener('click', addProjectWindow);
+        
+        if (!isProjectsEmpty()) {
+            renderLastProjectTasks();
+        }
     }
     
+    function renderLastProjectTasks() {
+        const allProjects = document.querySelectorAll('.project');
+        cleanTaskContainer();
+        allProjects[0].focus();
+        renderTasks(0);
+    }
     
     function addProjectWindow() {
         addProjectButton.removeEventListener('click', addProjectWindow);
@@ -52,14 +62,12 @@ const render = (() => {
         buttonsHolder.classList.add('buttons-holder');
         windowContainer.appendChild(buttonsHolder);
         
-        
         const addButton = document.createElement('button');
         addButton.classList.add('add-project-button');
         addButton.setAttribute('type', 'button');
         addButton.textContent = 'Add';
         buttonsHolder.appendChild(addButton);
         addButton.addEventListener('click', addProject);
-        
         
         const cancelButton = document.createElement('button');
         cancelButton.classList.add('cancel-button');
@@ -114,6 +122,16 @@ const render = (() => {
         
     }
     
+    function removeProject(e) {
+        e.stopPropagation();
+        toDoList.removeProjectFromList(e.target.parentNode.getAttribute('value'));
+        cleanTaskContainer();
+        projects();
+        if (!isProjectsEmpty()) {
+            removeTasksPlusButton();
+        }
+    }
+
     function addProject(e) {
         e.preventDefault();
         const projectNameInput = document.querySelector('.input-project-name');
@@ -124,7 +142,7 @@ const render = (() => {
             toDoList.addProjectToList(new Project(projectNameInput.value));
             removeAddProjectWindow();
             projects();
-            removeTasksPlusButton()
+            removeTasksPlusButton();
         }
     }
     
@@ -134,8 +152,7 @@ const render = (() => {
         addProjectButton.addEventListener('click', addProjectWindow);
     }
     
-    function plusButton(projectIndex) {
-
+    function plusButtonOnFocus(projectIndex) {
         if (isTasksEmpty(projectIndex) && !isProjectsEmpty()) {
             removeTasksPlusButton();
         }
@@ -145,8 +162,6 @@ const render = (() => {
         else {
             addTasksPlusButton();
         }
-
-
     }
     
     function removeTasksPlusButton() {
@@ -165,15 +180,13 @@ const render = (() => {
     
     function isProjectsEmpty() {
         if (toDoList.getProjectList().length == 0) {
-            console.log('isProjectEmty: true');
             return true;
         }
-        console.log('isProjectEmty: false');
         return false;
     }
     
     function isTasksEmpty(projectIndex) {
-        if (toDoList.getProject(projectIndex).isTasksEmpty()) {
+        if (toDoList.getProject(projectIndex).isEmpty()) {
             return true;
         }
         return false;
@@ -187,12 +200,11 @@ const render = (() => {
     function cleanProjectsContainer() {
         const projects = document.querySelectorAll('.project');
         projects.forEach(project => project.remove());
-        console.log('All projects removed from container');
     }
 
     function onChangeFocus(e) {
         cleanTaskContainer();
-        plusButton(e.target.getAttribute('value'));
+        plusButtonOnFocus(e.target.getAttribute('value'));
         renderTasks(e.target.getAttribute('value'));
     }
     

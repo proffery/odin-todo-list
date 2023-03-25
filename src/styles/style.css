@@ -109,6 +109,10 @@ body {
     width: calc(var(--main-font) + 2rem);
 }
 
+.remove-button {
+    width: var(--main-font);
+}
+
 .input-project-name {
     display: flex;
     margin: 1rem;

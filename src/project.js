@@ -43,7 +43,7 @@ export default class Project {
         }
     }
 
-    isTasksEmpty() {
+    isEmpty() {
         if (this.tasks.length == 0) {
             return true;
         }
