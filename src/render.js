@@ -10,6 +10,7 @@ const progectsContainer = document.querySelector('.projects');
 const tasksContainer = document.querySelector('.tasks');
 const addProjectsButton = document.querySelector('.add-projects-button');
 const addTasksButton = document.querySelector('.add-tasks-button');
+let activeProject = '0'
 
 const render = (() => {
     function projects() {
@@ -37,33 +38,147 @@ const render = (() => {
         if (!isProjectsEmpty()) {
             renderLastProjectTasks();
         }
+        else {
+            addTasksButton.removeEventListener('click', addTaskWindow);
+        }
     }
     
     function renderLastProjectTasks() {
         const allProjects = document.querySelectorAll('.project');
         cleanTaskContainer();
-        allProjects[0].focus();
-        renderTasks(0);
+        allProjects[activeProject].focus();
+        renderTasks(activeProject);
     }
     
     function addTaskWindow() {
         addTasksButton.removeEventListener('click', addTaskWindow);
-        console.log('Tasks Window');
-        //LOGIC
+        addProjectsButton.removeEventListener('click', addProjectWindow);
+        const projects = document.querySelectorAll('.project');
+        projects.forEach(project => project.removeEventListener('click', isFocusProjectsChange));
+        const remove = document.querySelectorAll('.remove-button');
+        remove.forEach(removeButton => removeButton.removeEventListener('click', removeProject));
+
+        const windowContainer = document.createElement('div');
+        windowContainer.classList.add('add-task-window');
+        tasksContainer.appendChild(windowContainer);
+
+        const taskNameLabel = document.createElement('label');
+        taskNameLabel.setAttribute('for', 'name');
+        taskNameLabel.textContent = 'Name:';
+        windowContainer.appendChild(taskNameLabel);
+        const inputTaskName = document.createElement('input');
+        inputTaskName.classList.add('input-task-name');
+        inputTaskName.type = 'text';
+        inputTaskName.id = 'name'
+        windowContainer.appendChild(inputTaskName);
+
+        const taskDescrLabel = document.createElement('label');
+        taskDescrLabel.setAttribute('for', 'descr');
+        taskDescrLabel.textContent = 'Description:';
+        windowContainer.appendChild(taskDescrLabel);
+        const inputTaskDescr = document.createElement('input');
+        inputTaskDescr.classList.add('input-task-descr');
+        inputTaskDescr.type = 'text';
+        inputTaskDescr.id = 'descr'
+        windowContainer.appendChild(inputTaskDescr);
+
+        const taskDateLabel = document.createElement('label');
+        taskDateLabel.setAttribute('for', 'date');
+        taskDateLabel.textContent = 'Date:';
+        windowContainer.appendChild(taskDateLabel);
+        const inputTaskDate = document.createElement('input');
+        inputTaskDate.classList.add('input-task-date');
+        inputTaskDate.type = 'datetime-local';
+        inputTaskDate.id = 'date'
+        windowContainer.appendChild(inputTaskDate);
+
+        const priorityLabel = document.createElement('label');
+        priorityLabel.setAttribute('for', 'input-priority');
+        priorityLabel.textContent = 'Priority:';
+        const inputPriority = document.createElement('select');
+        inputPriority.className = 'input-priority';
+        inputPriority.id = 'input-priority';
+        const optionLow = document.createElement('option');
+        optionLow.textContent = 'Low';
+        optionLow.value = 'low';
+        optionLow.setAttribute('selected', '');
+        const optionMedium = document.createElement('option');
+        optionMedium.textContent = 'Medium';
+        optionMedium.value = 'medium';
+        const optionHight = document.createElement('option');
+        optionHight.textContent = 'Hight';
+        optionHight.value = 'hight';
+        inputPriority.append(optionLow, optionMedium, optionHight);
+        windowContainer.append(priorityLabel, inputPriority);
+        
+        const inputNotes = document.createElement('textarea');
+        inputNotes.className = 'input-notes';
+        inputNotes.setAttribute('cols', '23');
+        inputNotes.setAttribute('rows', '5');
+        inputNotes.placeholder = 'Notes';
+        windowContainer.appendChild(inputNotes);
+
+        const completeStatusLabel = document.createElement('label');
+        completeStatusLabel.setAttribute('for', 'input-status');
+        completeStatusLabel.textContent = 'Completed:'
+        const completeStatusInput = document.createElement('input');
+        completeStatusInput.type = 'checkbox';
+        completeStatusInput.id = 'input-status';
+        completeStatusInput.className = 'input-status';
+        completeStatusLabel.appendChild(completeStatusInput);
+        windowContainer.append(completeStatusLabel);
+
+        const buttonsHolder = document.createElement('div');
+        buttonsHolder.classList.add('buttons-holder');
+        windowContainer.appendChild(buttonsHolder);
+        
+        const addButton = document.createElement('button');
+        addButton.classList.add('add-task-button');
+        addButton.setAttribute('type', 'button');
+        addButton.textContent = 'Add';
+        buttonsHolder.appendChild(addButton);
+        addButton.addEventListener('click', addTask);
+        
+        const cancelButton = document.createElement('button');
+        cancelButton.classList.add('cancel-button');
+        cancelButton.setAttribute('type', 'button');
+        cancelButton.textContent = 'Cancel';
+        buttonsHolder.appendChild(cancelButton);
+        cancelButton.addEventListener('click', removeAddTasktWindow);
+
+        inputTaskName.focus();
+
+    }
+    
+    
+    function removeAddTasktWindow() {
+        const taskWindow = document.querySelector('.add-task-window');
+        taskWindow.remove();
+        projects();
+    }
+    
+    function removeAddProjectWindow() {
+        const projectWindow = document.querySelector('.add-project-window')
+        projectWindow.remove();
+        projects();
     }
 
     function addProjectWindow() {
         addProjectsButton.removeEventListener('click', addProjectWindow);
+        addTasksButton.removeEventListener('click', addTaskWindow);
         
         const windowContainer = document.createElement('div');
         windowContainer.classList.add('add-project-window');
-        windowContainer.textContent = 'Enter project name :'
         progectsContainer.appendChild(windowContainer);
         
+        const labelProjectName = document.createElement('label');
+        labelProjectName.setAttribute('for', 'input-project-name');
+        labelProjectName.textContent = 'Project name:'
         const inputProjectName = document.createElement('input');
         inputProjectName.classList.add('input-project-name');
+        inputProjectName.id = 'input-project-name';
         inputProjectName.type = 'text';
-        windowContainer.appendChild(inputProjectName);
+        windowContainer.append(labelProjectName ,inputProjectName);
         
         const buttonsHolder = document.createElement('div');
         buttonsHolder.classList.add('buttons-holder');
@@ -82,11 +197,12 @@ const render = (() => {
         cancelButton.textContent = 'Cancel';
         buttonsHolder.appendChild(cancelButton);
         cancelButton.addEventListener('click', removeAddProjectWindow);
-
+        
         inputProjectName.focus();
     }
     
     function renderTasks(projectIndex) {
+
         for (let i = 0; i < toDoList.getProject(projectIndex).tasks.length; i++) {
             const taskContainer = document.createElement('div');
             taskContainer.classList.add('task');
@@ -101,14 +217,15 @@ const render = (() => {
                 taskContainer.classList.add('task-hight');
             }
             
-            taskContainer.textContent = (`${toDoList.getProject(projectIndex).task(i).title.capitalizeFirstLetter()}` + ` | ` + 
-            `${toDoList.getProject(projectIndex).task(i).description.capitalizeFirstLetter()}` + ` | ` +
+            taskContainer.textContent = (`${toDoList.getProject(projectIndex).task(i).title.capitalizeFirstLetter()}` + ` ` + 
+            `${toDoList.getProject(projectIndex).task(i).description.capitalizeFirstLetter()}` + ` ` +
             `${toDoList.getProject(projectIndex).task(i).dueDate.getDate()}` + `/` +
             `${toDoList.getProject(projectIndex).task(i).dueDate.getMonth()}` + `/` +
-            `${toDoList.getProject(projectIndex).task(i).dueDate.getFullYear()}` + ` | ` +
+            `${toDoList.getProject(projectIndex).task(i).dueDate.getFullYear()}` + ` ` +
             `${toDoList.getProject(projectIndex).task(i).notes.capitalizeFirstLetter().stringCutter()}`);
             
             taskContainer.setAttribute('value', `${i}`);
+            taskContainer.setAttribute('projectvalue', `${projectIndex}`);
             taskContainer.setAttribute('tabindex', `-1`);
             tasksContainer.appendChild(taskContainer);
             
@@ -130,6 +247,27 @@ const render = (() => {
         cleanTaskContainer();
         projects();
     }
+    
+    function addTask(e) {
+        e.preventDefault();
+        const taskName = document.querySelector('.input-task-name');
+        const taskDescr = document.querySelector('.input-task-descr');
+        const taskDate = document.querySelector('.input-task-date');
+        const taskPriority = document.querySelector('.input-priority');
+        const taskNotes = document.querySelector('.input-notes');
+        const taskStatus = document.querySelector('.input-status');
+
+        if (taskName.value.length < 1) {
+            warningMsg(taskName, 'Task name can\'t be emty!');
+        }
+        else {
+            toDoList.getProject(activeProject).addTask(new Task(taskName.value, taskDescr.value, taskDate.value, taskPriority.value, taskNotes.value, taskStatus.checked));
+            console.log(taskPriority.value);
+            removeAddTasktWindow();
+            projects();
+        }
+
+    }
 
     function addProject(e) {
         e.preventDefault();
@@ -144,11 +282,6 @@ const render = (() => {
         }
     }
     
-    function removeAddProjectWindow() {
-        const projectWindow = document.querySelector('.add-project-window')
-        projectWindow.remove();
-        addProjectsButton.addEventListener('click', addProjectWindow);
-    }
     
 
     function isProjectsEmpty() {
@@ -177,6 +310,7 @@ const render = (() => {
 
     function isFocusProjectsChange(e) {
         cleanTaskContainer();
+        activeProject = e.target.getAttribute('value');
         renderTasks(e.target.getAttribute('value'));
     }
     

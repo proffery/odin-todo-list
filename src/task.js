@@ -10,14 +10,15 @@ export default class Task {
 
         this.description = description;
         
-        if (regexDate.test(dueDate)) {
-            this.dueDate = new Date(dueDate);
+        if (dueDate !== '') {
+            const fakeUtcTime = new Date(`${dueDate}Z`);
+            this.dueDate = new Date(fakeUtcTime.getTime() + fakeUtcTime.getTimezoneOffset() * 60000);
         }
         else {
             this.dueDate = new Date();
         }
         
-        if (priority === 'low' || priority === 'medium' || priority === 'hight') {
+        if (priority.toLowerCase() === 'low' || priority.toLowerCase() === 'medium' || priority.toLowerCase() === 'hight') {
             this.priority = priority;
         }
         

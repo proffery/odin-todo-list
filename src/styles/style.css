@@ -80,10 +80,15 @@ body {
     width: var(--main-font);
 }
 
-.add-project-window {
+.add-project-window::first-line, .add-task-window::first-line {
+    font-weight: 600;
+}
+
+.add-project-window, .add-task-window {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: safe;
+    text-align: center;
     justify-content: center;
     position: absolute;
     top: 35%;
@@ -101,17 +106,31 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin-top: 1rem;
 }
 
-.add-project-button, .cancel-button {
+.add-project-button, .add-task-button, .cancel-button {
     margin-left: 1rem;
     margin-right: 1rem;
     width: calc(var(--main-font) + 2rem);
 }
-
-.input-project-name {
+ 
+input, select, textarea{
     display: flex;
-    margin: 1rem;
+    margin-bottom: 1rem;
+    max-width: 12rem;
+    min-width:fit-content;
+    max-height: 20rem;
+}
+
+label {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+}
+
+#input-status {
+    margin: auto;
 }
 
 .footer {
@@ -138,8 +157,8 @@ a {
 
 .warning {
     display: flex;
-    position: absolute;
-    transform: translateY(-70%);
+    position:relative;
+    transform: translateY(-60%);
     border: 1px solid #f39389;
     border-radius: 2px;
     padding: .3rem;
