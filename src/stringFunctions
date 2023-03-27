@@ -8,10 +8,10 @@ Object.defineProperty(String.prototype, 'capitalizeFirstLetter', {
 
 Object.defineProperty(String.prototype, 'stringCutter', {
     value: function () {
-        if(this.length <= 10) {
+        if(this.length <= 15) {
             return this;
         }
-        return this.substring(0, 10) + '...';
+        return this.substring(0, 15) + '...';
     },
     writable: true, // so that one can overwrite it later
     configurable: true // so that it can be deleted later

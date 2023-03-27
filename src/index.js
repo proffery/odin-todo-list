@@ -3,31 +3,14 @@ import Task from './task.js'
 import Project from './project.js';
 import './styles/style.css';
 import {render} from './render.js';
-const task1 = new Task('task', 'descr', '06/16/87', 'medium', '01234567890', true);
-const task2 = new Task('task2', 'descr', '2018-06-12T19:30', 'ddd', 'notes', false);
-const task3 = new Task('task3', 'descr', '06/16/87', 'hight', 'notes', true);
-const task4 = new Task('task4', 'descr', '106/16/87', 'ddd', 'notes', false);
-const project = new Project('Project1');
-const project2 = new Project('Project2');
+const task1 = new Task('Today task', 'finish this project', new Date(), 'hight', '', true);
+const task2 = new Task('New Year', 'celebrations', '12/31/23', 'medium', 'Happy New Year!', false);
+const task3 = new Task('The Odin Project', 'Finish this course', '02/1/24', 'medium', 'I CAN DO THIS', false);
+const task4 = new Task('task', 'random task', '6/11/22', 'ddd', 'notes', true);
+const project = new Project('My goals');
 project.addTask(task1);
 project.addTask(task2);
-project2.addTask(task3);
-project2.addTask(task4);
-//console.log(task);
-console.log(project.name);
-console.log(project.tasks);
-task2.title = 'task1'
-// console.log(project.task(0));
-// console.log(project.task(1));
-
-// project.removeTask(0);
-
-console.log(project.tasks);
-
-// project.name = 'Project2';
-console.log(project.name);
-toDoList.addProjectToList(project2);
+project.addTask(task3);
+project.addTask(task4);
 toDoList.addProjectToList(project);
-console.log(toDoList.getProject(0));
-
 render.projects();

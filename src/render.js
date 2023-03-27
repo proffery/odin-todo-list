@@ -1,5 +1,4 @@
 import addIcon from './img/plus.svg';
-import checIcon from './img/check.svg';
 import trashIcon from   './img/trash.svg';
 import editIcon from './img/edit.svg';
 import githubMark from './img/github-mark.png';
@@ -119,7 +118,7 @@ const render = (() => {
         inputNotes.className = 'input-notes';
         inputNotes.setAttribute('cols', '23');
         inputNotes.setAttribute('rows', '5');
-        inputNotes.placeholder = ' Notes';
+        inputNotes.placeholder = 'Notes';
         windowContainer.appendChild(inputNotes);
 
         const completeStatusLabel = document.createElement('label');
@@ -235,12 +234,10 @@ const render = (() => {
                 taskContainer.classList.add('task-hight');
             }
             
-            taskContainer.textContent = (`${toDoList.getProject(projectIndex).getTask(i).title.capitalizeFirstLetter()}` + ` ` + 
-            `${toDoList.getProject(projectIndex).getTask(i).description.capitalizeFirstLetter()}` + ` ` +
-            `${toDoList.getProject(projectIndex).getTask(i).dueDate.getDate()}` + `/` +
-            `${toDoList.getProject(projectIndex).getTask(i).dueDate.getMonth()}` + `/` +
-            `${toDoList.getProject(projectIndex).getTask(i).dueDate.getFullYear()}` + ` ` +
-            `${toDoList.getProject(projectIndex).getTask(i).notes.capitalizeFirstLetter().stringCutter()}`);
+            taskContainer.textContent = (`${toDoList.getProject(projectIndex).getTask(i).title.capitalizeFirstLetter()}:
+            ${toDoList.getProject(projectIndex).getTask(i).description.capitalizeFirstLetter()}
+            (${toDoList.getProject(projectIndex).getTask(i).dueDate.getDate()}/${toDoList.getProject(projectIndex).getTask(i).dueDate.getMonth() + 1}/${toDoList.getProject(projectIndex).getTask(i).dueDate.getFullYear()})
+            ${toDoList.getProject(projectIndex).getTask(i).notes.capitalizeFirstLetter().stringCutter()}`);
             
             taskContainer.setAttribute('value', `${i}`);
             taskContainer.setAttribute('projectvalue', `${projectIndex}`);
@@ -252,11 +249,6 @@ const render = (() => {
             taskContainer.appendChild(iconContainer);
 
             if(toDoList.getProject(projectIndex).getTask(i).complete) {
-                // const checkMark = document.createElement('img');
-                // checkMark.classList.add('check-mark');
-                // checkMark.setAttribute('src', checIcon);
-                // checkMark.setAttribute('alt', 'Check mark');
-                // iconContainer.appendChild(checkMark);
                 taskContainer.classList.add('task-completed');
             }
 
@@ -282,7 +274,17 @@ const render = (() => {
         e.stopPropagation();
         previosEvent = e;
         addTaskWindow(e);
+        const taskName = document.querySelector('.input-task-name');
+        const taskDescr = document.querySelector('.input-task-descr');
+        const taskPriority = document.querySelector('.input-priority');
+        const taskNotes = document.querySelector('.input-notes');
+
+        taskName.value = `${toDoList.getProject(e.target.parentNode.parentNode.getAttribute('projectvalue')).getTask(e.target.parentNode.parentNode.getAttribute('value')).title}`;
+        taskDescr.value = `${toDoList.getProject(e.target.parentNode.parentNode.getAttribute('projectvalue')).getTask(e.target.parentNode.parentNode.getAttribute('value')).description}`;
+        taskPriority.value = `${toDoList.getProject(e.target.parentNode.parentNode.getAttribute('projectvalue')).getTask(e.target.parentNode.parentNode.getAttribute('value')).priority}`;
+        taskNotes.value = `${toDoList.getProject(e.target.parentNode.parentNode.getAttribute('projectvalue')).getTask(e.target.parentNode.parentNode.getAttribute('value')).notes}`;
     }
+
 
     function removeProject(e) {
         e.stopPropagation();
@@ -319,7 +321,6 @@ const render = (() => {
             }
 
             else if (previosEvent.target.getAttribute('class') === 'edit-button') {
-               
                 toDoList.getProject(activeProject).setTask(previosEvent.target.parentNode.parentNode.getAttribute('value'), new Task(taskName.value, taskDescr.value, taskDate.value, taskPriority.value, taskNotes.value, taskStatus.checked));
                 removeAddTasktWindow();
                 projects();
