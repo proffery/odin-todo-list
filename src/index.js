@@ -17,8 +17,8 @@ project2.addTask(task4);
 console.log(project.name);
 console.log(project.tasks);
 task2.title = 'task1'
-console.log(project.task(0));
-console.log(project.task(1));
+// console.log(project.task(0));
+// console.log(project.task(1));
 
 // project.removeTask(0);
 

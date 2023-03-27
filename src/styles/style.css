@@ -64,6 +64,10 @@ body {
     background-color: rgb(255, 208, 201);
 }
 
+.task-completed {
+    text-decoration: line-through;
+}
+
 .project, .task {
     display: flex;
     align-items: center;
@@ -76,7 +80,7 @@ body {
     border: 1px solid var(--background-color-main);
 }
 
-.add-projects-button, .add-tasks-button, .check-mark, .remove-button {
+.add-projects-button, .add-tasks-button, .check-mark, .remove-button, .edit-button {
     width: var(--main-font);
 }
 

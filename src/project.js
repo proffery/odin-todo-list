@@ -26,8 +26,12 @@ export default class Project {
         return this.tasks;
     }
 
-    task(taskNumber) {
+    getTask(taskNumber) {
         return this.tasks[taskNumber];
+    }
+
+    setTask(taskNumber, task) {
+        this.tasks[taskNumber] = task;
     }
 
     addTask(task) {
