@@ -15,6 +15,8 @@ let previosEvent;
 
 const render = (() => {
     function projects() {
+        addProjectsButton.src = addIcon;
+        addTasksButton.src = addIcon;
         cleanProjectsContainer();
         for (let i = 0; i < toDoList.getProjectList().length; i++) {
             const projectContainer = document.createElement('div');
