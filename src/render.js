@@ -352,7 +352,7 @@ const render = (() => {
     
     function removeTask(e) {
         e.stopPropagation();
-        toDoList.getProject(e.target.parentNode.parentNode.getAttribute('projectvalue')).removeTask(e.target.parentNode.getAttribute('value'));
+        toDoList.getProject(e.target.parentNode.parentNode.getAttribute('projectvalue')).removeTask(e.target.parentNode.parentNode.getAttribute('value'));
         cleanTaskContainer();
         projects();
     }
