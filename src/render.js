@@ -10,11 +10,13 @@ const progectsContainer = document.querySelector('.projects');
 const tasksContainer = document.querySelector('.tasks');
 const addProjectsButton = document.querySelector('.add-projects-button');
 const addTasksButton = document.querySelector('.add-tasks-button');
+const gitIcon = document.querySelector('.github-mark');
 let activeProject = '0';
 let previosEvent;
 
 const render = (() => {
     function projects() {
+        gitIcon.src = githubMark;
         addProjectsButton.src = addIcon;
         addTasksButton.src = addIcon;
         cleanProjectsContainer();
