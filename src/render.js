@@ -60,7 +60,6 @@ const render = (() => {
     function addTaskWindow(e) {
         removeAllListeners();
         previosEvent = e;
-        console.log(previosEvent.target.getAttribute('class'));
         const windowContainer = document.createElement('div');
         windowContainer.classList.add('add-task-window');
         tasksContainer.appendChild(windowContainer);
@@ -166,7 +165,11 @@ const render = (() => {
         remove.forEach(removeButton => removeButton.removeEventListener('click', removeTask));
 
         const edit = document.querySelectorAll('.edit-button');
-        edit.forEach(editButton => editButton.removeEventListener('click', editTask))
+        edit.forEach(editButton => editButton.removeEventListener('click', editTask));
+
+        const info = document.querySelectorAll('.task');
+        info.forEach(button => button.removeEventListener('click', editTask));
+
     }
     
     function removeAddTasktWindow() {
@@ -251,6 +254,7 @@ const render = (() => {
             if(toDoList.getProject(projectIndex).getTask(i).complete) {
                 taskContainer.classList.add('task-completed');
             }
+            taskContainer.addEventListener('click', editTask);
 
             const editTaskButton = document.createElement('img');
             editTaskButton.className = 'edit-button';
@@ -270,6 +274,7 @@ const render = (() => {
         
     }
     
+
     function editTask(e) {
         e.stopPropagation();
         previosEvent = e;
@@ -277,12 +282,63 @@ const render = (() => {
         const taskName = document.querySelector('.input-task-name');
         const taskDescr = document.querySelector('.input-task-descr');
         const taskPriority = document.querySelector('.input-priority');
+        const taskPriorityLabel = document.querySelector('label[for="input-priority"]');
         const taskNotes = document.querySelector('.input-notes');
+        const taskStatus = document.querySelector('.input-status');
+        const taskStatusLabel = document.querySelector('label[for="input-status"]');
+        const taskDate = document.querySelector('.input-task-date');
+        const taskAddButton = document.querySelector('.add-task-button');
+        const windowContainer = document.querySelector('.add-task-window')
 
-        taskName.value = `${toDoList.getProject(e.target.parentNode.parentNode.getAttribute('projectvalue')).getTask(e.target.parentNode.parentNode.getAttribute('value')).title}`;
-        taskDescr.value = `${toDoList.getProject(e.target.parentNode.parentNode.getAttribute('projectvalue')).getTask(e.target.parentNode.parentNode.getAttribute('value')).description}`;
-        taskPriority.value = `${toDoList.getProject(e.target.parentNode.parentNode.getAttribute('projectvalue')).getTask(e.target.parentNode.parentNode.getAttribute('value')).priority}`;
-        taskNotes.value = `${toDoList.getProject(e.target.parentNode.parentNode.getAttribute('projectvalue')).getTask(e.target.parentNode.parentNode.getAttribute('value')).notes}`;
+        if (previosEvent.target.getAttribute('class').includes('task')) {
+            taskName.value = `${toDoList.getProject(e.target.getAttribute('projectvalue')).getTask(e.target.getAttribute('value')).title}`;
+            taskDescr.value = `${toDoList.getProject(e.target.getAttribute('projectvalue')).getTask(e.target.getAttribute('value')).description}`;
+            taskPriority.value = `${toDoList.getProject(e.target.getAttribute('projectvalue')).getTask(e.target.getAttribute('value')).priority}`;
+            taskNotes.value = `${toDoList.getProject(e.target.getAttribute('projectvalue')).getTask(e.target.getAttribute('value')).notes}`;
+            taskStatus.checked = toDoList.getProject(e.target.getAttribute('projectvalue')).getTask(e.target.getAttribute('value')).complete;
+            const d = toDoList.getProject(e.target.getAttribute('projectvalue')).getTask(e.target.getAttribute('value')).dueDate;
+            const dateTimeLocalValue = (new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString()).slice(0, -1);
+            taskDate.value = dateTimeLocalValue;
+            taskName.setAttribute('readonly', '');
+            taskDescr.setAttribute('readonly', '');
+            if (toDoList.getProject(e.target.getAttribute('projectvalue')).getTask(e.target.getAttribute('value')).priority === 'low') {
+                windowContainer.classList.add('task-low');
+            }
+            if (toDoList.getProject(e.target.getAttribute('projectvalue')).getTask(e.target.getAttribute('value')).priority === 'medium') {
+                windowContainer.classList.add('task-medium');
+            }
+            if (toDoList.getProject(e.target.getAttribute('projectvalue')).getTask(e.target.getAttribute('value')).priority === 'hight') {
+                windowContainer.classList.add('task-hight');
+            }
+
+            if (taskStatus.checked) {
+                taskStatusLabel.textContent = 'Task is completed!';
+            }
+            else {
+                taskStatusLabel.textContent = 'Task is not completed!';
+            }
+
+            taskNotes.setAttribute('readonly', '');
+            taskStatus.setAttribute('readonly', '');
+            taskDate.setAttribute('readonly', '');
+            taskStatus.remove();
+            taskPriority.remove();
+            taskPriorityLabel.remove();
+            taskAddButton.remove();
+
+        }
+
+        else {
+            taskName.value = `${toDoList.getProject(e.target.parentNode.parentNode.getAttribute('projectvalue')).getTask(e.target.parentNode.parentNode.getAttribute('value')).title}`;
+            taskDescr.value = `${toDoList.getProject(e.target.parentNode.parentNode.getAttribute('projectvalue')).getTask(e.target.parentNode.parentNode.getAttribute('value')).description}`;
+            taskPriority.value = `${toDoList.getProject(e.target.parentNode.parentNode.getAttribute('projectvalue')).getTask(e.target.parentNode.parentNode.getAttribute('value')).priority}`;
+            taskNotes.value = `${toDoList.getProject(e.target.parentNode.parentNode.getAttribute('projectvalue')).getTask(e.target.parentNode.parentNode.getAttribute('value')).notes}`;
+            taskStatus.checked = toDoList.getProject(e.target.parentNode.parentNode.getAttribute('projectvalue')).getTask(e.target.parentNode.parentNode.getAttribute('value')).complete;
+            const d = toDoList.getProject(e.target.parentNode.parentNode.getAttribute('projectvalue')).getTask(e.target.parentNode.parentNode.getAttribute('value')).dueDate;
+            const dateTimeLocalValue = (new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString()).slice(0, -1);
+            taskDate.value = dateTimeLocalValue;
+            console.log(previosEvent.target.getAttribute('class'));
+        }
     }
 
 
