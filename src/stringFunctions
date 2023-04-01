@@ -16,3 +16,10 @@ Object.defineProperty(String.prototype, 'stringCutter', {
     writable: true, // so that one can overwrite it later
     configurable: true // so that it can be deleted later
 });
+
+Storage.prototype.setObj = function(key, obj) {
+    return this.setItem(key, JSON.stringify(obj))
+}
+Storage.prototype.getObj = function(key) {
+    return JSON.parse(this.getItem(key))
+}

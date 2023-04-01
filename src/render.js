@@ -2,24 +2,41 @@ import addIcon from './img/plus.svg';
 import trashIcon from   './img/trash.svg';
 import editIcon from './img/edit.svg';
 import githubMark from './img/github-mark.png';
+import storageIcon from './img/sd.svg';
 import {toDoList} from './toDoList.js';
 import Task from './task.js'
 import Project from './project.js';
 import './stringFunctions'
+import {storageAvailable} from './storage.js';
 const progectsContainer = document.querySelector('.projects');
 const tasksContainer = document.querySelector('.tasks');
 const addProjectsButton = document.querySelector('.add-projects-button');
 const addTasksButton = document.querySelector('.add-tasks-button');
 const gitIcon = document.querySelector('.github-mark');
+const header = document.querySelector('.header');
+
 let activeProject = '0';
 let previosEvent;
+
+
+if (storageAvailable('localStorage')) {
+    const storage = document.createElement('img');
+    storage.className = 'storage-icon';
+    storage.src = storageIcon;
+    storage.title = 'Local save'
+    header.appendChild(storage);
+}
 
 const render = (() => {
     function projects() {
         gitIcon.src = githubMark;
         addProjectsButton.src = addIcon;
+        addProjectsButton.title = 'Add new project';
         addTasksButton.src = addIcon;
+        addTasksButton.title = 'Add new task';
         cleanProjectsContainer();
+        toDoList.rebuildFromLocal();
+
         for (let i = 0; i < toDoList.getProjectList().length; i++) {
             const projectContainer = document.createElement('div');
             projectContainer.classList.add(`project`);
@@ -33,6 +50,7 @@ const render = (() => {
             removeButton.classList.add('remove-button');
             removeButton.src = trashIcon;
             removeButton.alt = 'Remove button';
+            removeButton.title = 'Remove project';
             projectContainer.appendChild(removeButton);
             removeButton.addEventListener('click', removeProject);
         }
@@ -169,10 +187,10 @@ const render = (() => {
         remove.forEach(removeButton => removeButton.removeEventListener('click', removeTask));
 
         const edit = document.querySelectorAll('.edit-button');
-        edit.forEach(editButton => editButton.removeEventListener('click', editTask));
+        edit.forEach(editButton => editButton.removeEventListener('click', editTaskWindow));
 
         const info = document.querySelectorAll('.task');
-        info.forEach(button => button.removeEventListener('click', editTask));
+        info.forEach(button => button.removeEventListener('click', editTaskWindow));
 
     }
     
@@ -230,7 +248,7 @@ const render = (() => {
         for (let i = 0; i < toDoList.getProject(projectIndex).tasks.length; i++) {
             const taskContainer = document.createElement('div');
             taskContainer.classList.add('task');
-            
+           
             if (toDoList.getProject(projectIndex).getTask(i).priority === 'low') {
                 taskContainer.classList.add('task-low');
             }
@@ -240,46 +258,72 @@ const render = (() => {
             if (toDoList.getProject(projectIndex).getTask(i).priority === 'hight') {
                 taskContainer.classList.add('task-hight');
             }
-            
             taskContainer.textContent = (`${toDoList.getProject(projectIndex).getTask(i).title.capitalizeFirstLetter()}:
             ${toDoList.getProject(projectIndex).getTask(i).description.capitalizeFirstLetter()}
-            (${toDoList.getProject(projectIndex).getTask(i).dueDate.getDate()}/${toDoList.getProject(projectIndex).getTask(i).dueDate.getMonth() + 1}/${toDoList.getProject(projectIndex).getTask(i).dueDate.getFullYear()})
+            «${toDoList.getProject(projectIndex).getTask(i).dueDate.getDate()}/${toDoList.getProject(projectIndex).getTask(i).dueDate.getMonth() + 1}/${toDoList.getProject(projectIndex).getTask(i).dueDate.getFullYear()}»
             ${toDoList.getProject(projectIndex).getTask(i).notes.capitalizeFirstLetter().stringCutter()}`);
+            if(toDoList.getProject(projectIndex).getTask(i).complete) {
+                taskContainer.classList.add('task-completed');
+            }
+            
             
             taskContainer.setAttribute('value', `${i}`);
             taskContainer.setAttribute('projectvalue', `${projectIndex}`);
-            taskContainer.setAttribute('tabindex', `-1`);
+            taskContainer.title = 'Task info'
             tasksContainer.appendChild(taskContainer);
             
             const iconContainer = document.createElement('div');
             iconContainer.className = 'icon-container';
             taskContainer.appendChild(iconContainer);
 
-            if(toDoList.getProject(projectIndex).getTask(i).complete) {
-                taskContainer.classList.add('task-completed');
-            }
-            taskContainer.addEventListener('click', editTask);
+            taskContainer.addEventListener('click', editTaskWindow);
 
             const editTaskButton = document.createElement('img');
             editTaskButton.className = 'edit-button';
             editTaskButton.src = editIcon;
+            editTaskButton.title = 'Edit task';
             editTaskButton.setAttribute('alt', 'Edit task');
             iconContainer.appendChild(editTaskButton);
-            editTaskButton.addEventListener('click', editTask);
-
+            editTaskButton.addEventListener('click', editTaskWindow);
+            
             const removeTaskButton = document.createElement('img');
             removeTaskButton.className = 'remove-button';
             removeTaskButton.src = trashIcon;
+            removeTaskButton.title = 'Remove task';
             removeTaskButton.setAttribute('alt', 'Remove task');
             iconContainer.appendChild(removeTaskButton);
             removeTaskButton.addEventListener('click', removeTask);
-
+            
         }
         
     }
-    
 
-    function editTask(e) {
+    function addProject(e) {
+        e.preventDefault();
+        const projectNameInput = document.querySelector('.input-project-name');
+        if (projectNameInput.value.length < 1) {
+            warningMsg(projectNameInput, 'Project name can\'t be emty!');
+        }
+        else {
+            toDoList.addProjectToList(new Project(projectNameInput.value));
+            toDoList.saveToLocal();
+            removeAddProjectWindow();
+            projects();
+        }
+
+    
+    }
+    
+    function removeProject(e) {
+        e.stopPropagation();
+        activeProject = 0;
+        toDoList.removeProjectFromList(e.target.parentNode.getAttribute('value'));
+        toDoList.saveToLocal();
+        cleanTaskContainer();
+        projects();
+    }
+    
+    function editTaskWindow(e) {
         e.stopPropagation();
         previosEvent = e;
         addTaskWindow(e);
@@ -341,22 +385,15 @@ const render = (() => {
             const d = toDoList.getProject(e.target.parentNode.parentNode.getAttribute('projectvalue')).getTask(e.target.parentNode.parentNode.getAttribute('value')).dueDate;
             const dateTimeLocalValue = (new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString()).slice(0, -1);
             taskDate.value = dateTimeLocalValue;
-            console.log(previosEvent.target.getAttribute('class'));
         }
     }
 
 
-    function removeProject(e) {
-        e.stopPropagation();
-        activeProject = 0;
-        toDoList.removeProjectFromList(e.target.parentNode.getAttribute('value'));
-        cleanTaskContainer();
-        projects();
-    }
     
     function removeTask(e) {
         e.stopPropagation();
         toDoList.getProject(e.target.parentNode.parentNode.getAttribute('projectvalue')).removeTask(e.target.parentNode.parentNode.getAttribute('value'));
+        toDoList.saveToLocal();
         cleanTaskContainer();
         projects();
     }
@@ -376,33 +413,20 @@ const render = (() => {
         else {
             if(previosEvent.target.getAttribute('class') === 'add-tasks-button') {
                 toDoList.getProject(activeProject).addTask(new Task(taskName.value, taskDescr.value, taskDate.value, taskPriority.value, taskNotes.value, taskStatus.checked));
+                toDoList.saveToLocal();
                 removeAddTasktWindow();
                 projects();
             }
 
             else if (previosEvent.target.getAttribute('class') === 'edit-button') {
                 toDoList.getProject(activeProject).setTask(previosEvent.target.parentNode.parentNode.getAttribute('value'), new Task(taskName.value, taskDescr.value, taskDate.value, taskPriority.value, taskNotes.value, taskStatus.checked));
+                toDoList.saveToLocal();
                 removeAddTasktWindow();
                 projects();
             }
         }
 
     }
-
-    function addProject(e) {
-        e.preventDefault();
-        const projectNameInput = document.querySelector('.input-project-name');
-        if (projectNameInput.value.length < 1) {
-            warningMsg(projectNameInput, 'Project name can\'t be emty!');
-        }
-        else {
-            toDoList.addProjectToList(new Project(projectNameInput.value));
-            removeAddProjectWindow();
-            projects();
-        }
-    }
-    
-    
 
     function isProjectsEmpty() {
         if (toDoList.getProjectList().length == 0) {

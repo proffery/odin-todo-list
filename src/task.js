@@ -1,6 +1,5 @@
 export default class Task {
     constructor (title, description, dueDate, priority, notes, complete) {
-        const regexDate = /^(0?[1-9]|1[0-2])\/(0?[1-9]|[12]\d|30|31)\/(\d{4}|\d{2})$/;
         if(title.length > 0) {
             this.title = title;
         }
@@ -53,10 +52,13 @@ export default class Task {
     }
 
     setDueDate(date) {
-        if (regexDate.test(dueDate)) {
-            this.dueDate = date;
+        if (date !== '') {
+            const fakeUtcTime = new Date(`${date}Z`);
+            this.dueDate = new Date(fakeUtcTime.getTime() + fakeUtcTime.getTimezoneOffset() * 60000);
         }
-        this.dueDate = new Date();
+        else {
+            this.dueDate = new Date();
+        }
     }
 
     getPriority() {
